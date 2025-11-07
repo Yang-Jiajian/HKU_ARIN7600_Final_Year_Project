@@ -1,19 +1,14 @@
 import os
-from flask import current_app
-from typing import Tuple
+import uuid
+import json
+from typing import Tuple, Optional
 
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-
-
-def _get_llm_config():
-    """Read LLM config from Flask config or environment variables."""
-    app_config = getattr(current_app, "config", {})
-    api_base = app_config.get("LLM_API_BASE") or os.getenv("LLM_API_BASE")
-    api_key = app_config.get("LLM_API_KEY") or os.getenv("LLM_API_KEY")
-    model = app_config.get("LLM_MODEL") or os.getenv("LLM_MODEL")
-    return api_base, api_key, model
+# 全局 chat model 对象
+_chat_model: Optional[ChatOpenAI] = None
+_initialization_error: Optional[str] = None
 
 
 def _build_chat_model(api_base: str, api_key: str, model: str) -> Tuple[object, str]:
@@ -22,28 +17,49 @@ def _build_chat_model(api_base: str, api_key: str, model: str) -> Tuple[object, 
             api_key=api_key,
             model=model,
             base_url=api_base,  # supports OpenAI-compatible providers
-            temperature=0.9,
-            max_tokens=200,
-            timeout=30,
         )
         return llm, ""
     except Exception as e:  # initialization error
         return None, str(e)
 
 
-def generate_ielts_prompt():
-    """Use LangChain ChatOpenAI to generate a random IELTS Writing Task 2 topic."""
-    api_base, api_key, model = _get_llm_config()
-
+def initialize_chat_model(app):
+    """在应用启动时初始化全局 chat model。
+    
+    Args:
+        app: Flask 应用实例
+    """
+    global _chat_model, _initialization_error
+    
+    api_base = app.config.get("LLM_API_BASE") or os.getenv("LLM_API_BASE")
+    api_key = app.config.get("LLM_API_KEY") or os.getenv("LLM_API_KEY")
+    model = app.config.get("LLM_MODEL") or os.getenv("LLM_MODEL")
+    
     if not api_base or not api_key or not model:
-        return {
-            "error": "LLM configuration missing",
-            "detail": "Please set LLM_API_BASE, LLM_API_KEY, and LLM_MODEL",
-        }, 500
+        _initialization_error = "LLM configuration missing: Please set LLM_API_BASE, LLM_API_KEY, and LLM_MODEL"
+        _chat_model = None
+        return
+    
+    _chat_model, _initialization_error = _build_chat_model(api_base, api_key, model)
 
-    llm, init_error = _build_chat_model(api_base, api_key, model)
+
+def get_chat_model():
+    """获取全局 chat model 对象。
+    
+    Returns:
+        Tuple[Optional[ChatOpenAI], Optional[str]]: (chat_model, error_message)
+    """
+    global _chat_model, _initialization_error
+    return _chat_model, _initialization_error
+
+
+def generate_ielts_topic(conversation_id: str, user_id: str):
+    """Use LangChain ChatOpenAI to generate a random IELTS Writing Task 2 topic."""
+    
+    llm, init_error = get_chat_model()
     if llm is None:
-        return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": init_error}, 500
+        error_msg = init_error or "Chat model not initialized"
+        return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": error_msg}, 500
 
     system_prompt = "You are a helpful assistant that creates IELTS Writing Task."
     user_prompt = (
@@ -58,7 +74,18 @@ def generate_ielts_prompt():
         content = (getattr(response, "content", "") or "").strip()
         if not content:
             return {"error": "Empty response from LLM"}, 502
-        return {"assistant": content}
+        # save the conversation to the history file
+        message_id = str(uuid.uuid4())
+        record = [
+            {
+                "message_id": message_id,
+                "role": "bot",
+                "content": content
+            }
+        ]
+        print(record)
+        save_conversation_to_history(conversation_id=conversation_id, user_id=user_id, record=record)
+        return record
     except Exception as e:
         return {
             "error": "Failed to call LLM via LangChain",
@@ -66,21 +93,15 @@ def generate_ielts_prompt():
         }, 502
 
 
-def evaluate_ielts_essay(topic: str, essay: str):
+def evaluate_ielts_essay(conversation:list, essay:str, conversation_id: str, user_id: str):
     """Score and review an IELTS Task 2 essay using IELTS official criteria.
     Returns a structured JSON with overall band, breakdown, and actionable advice.
     """
-    api_base, api_key, model = _get_llm_config()
-    if not api_base or not api_key or not model:
-        return {
-            "error": "LLM configuration missing",
-            "detail": "Please set LLM_API_BASE, LLM_API_KEY, and LLM_MODEL",
-        }, 500
-
-    llm, init_error = _build_chat_model(api_base, api_key, model)
+    llm, init_error = get_chat_model()
     if llm is None:
-        return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": init_error}, 500
-
+        error_msg = init_error or "Chat model not initialized"
+        return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": error_msg}, 500
+    topic = conversation[0]["content"]
     system = (
         "You are an IELTS Writing Task 2 examiner. Evaluate essays using official band descriptors: "
         "Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy. "
@@ -94,37 +115,39 @@ def evaluate_ielts_essay(topic: str, essay: str):
     )
 
     try:
-        messages = [SystemMessage(content=system), HumanMessage(content=user)]
-        response = llm.invoke(messages)
+        response = llm.invoke([SystemMessage(content=system), HumanMessage(content=user)])
         content = (getattr(response, "content", "") or "").strip()
         if not content:
             return {"error": "Empty response from LLM"}, 502
 
-        # Try to parse JSON; if fails, return raw assistant text
-        import json
-        try:
-            data = json.loads(content)
-            return data
-        except Exception:
-            return {"assistant": content}
+        # save the conversation to the history file
+        record = [
+            {
+                "message_id": str(uuid.uuid4()),
+                "role": "user",
+                "content": essay
+            },
+            {
+                "message_id": str(uuid.uuid4()),
+                "role": "bot",
+                "content": content
+            }
+        ]
+        conversation.extend(record)
+        save_conversation_to_history(conversation_id=conversation_id, user_id=user_id, record=record)
+        return conversation
     except Exception as e:
         return {"error": "Failed to evaluate essay", "detail": str(e)}, 502
 
 
-def continue_ielts_conversation(conversation: list):
+def continue_ielts_conversation(conversation: list, query: str,conversation_id:str, user_id:str):
     """Continue the IELTS feedback conversation with provided context messages.
     conversation: list of {role: 'system'|'user'|'assistant', content: str}
     """
-    api_base, api_key, model = _get_llm_config()
-    if not api_base or not api_key or not model:
-        return {
-            "error": "LLM configuration missing",
-            "detail": "Please set LLM_API_BASE, LLM_API_KEY, and LLM_MODEL",
-        }, 500
-
-    llm, init_error = _build_chat_model(api_base, api_key, model)
+    llm, init_error = get_chat_model()
     if llm is None:
-        return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": init_error}, 500
+        error_msg = init_error or "Chat model not initialized"
+        return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": error_msg}, 500
 
     # Ensure there is a guiding system prompt to keep the assistant as an IELTS coach
     default_system = SystemMessage(content=(
@@ -140,18 +163,88 @@ def continue_ielts_conversation(conversation: list):
             continue
         if role == "system":
             lc_messages.append(SystemMessage(content=content))
-        elif role == "assistant":
+        elif role == "bot":
             # LangChain's AIMessage would be ideal, but ChatOpenAI accepts plain strings via invoke as well
             from langchain_core.messages import AIMessage
             lc_messages.append(AIMessage(content=content))
         else:
             lc_messages.append(HumanMessage(content=content))
-
+    lc_messages.append(HumanMessage(content=query))
     try:
         response = llm.invoke(lc_messages)
         content = (getattr(response, "content", "") or "").strip()
         if not content:
             return {"error": "Empty response from LLM"}, 502
-        return {"assistant": content}
+        record = [
+            {
+                "message_id": str(uuid.uuid4()),
+                "role": "user",
+                "content": query
+            },
+            {
+                "message_id": str(uuid.uuid4()),
+                "role": "bot",
+                "content": content
+            }
+        ]
+        save_conversation_to_history(conversation_id=conversation_id, user_id=user_id, record=record)
+        conversation.extend(record)
+        return conversation
     except Exception as e:
         return {"error": "Failed to continue conversation", "detail": str(e)}, 502
+
+
+def save_conversation_to_history(conversation_id: str, user_id: str, record: list) -> None:
+    """将生成的机器人内容保存/追加到用户历史文件。
+    
+    - 路径：app/data/{user_id}/history.json
+    - 若会话存在：向 conversation 追加一条 role=bot 的消息
+    - 若会话不存在：创建新会话并写入首条消息
+    - 若文件不存在：创建新文件
+    - 发生异常时静默失败（打印错误），不抛出
+    """
+
+    try:
+        app_dir = os.path.dirname(os.path.dirname(__file__))
+        user_data_dir = os.path.join(app_dir, "data", user_id)
+        os.makedirs(user_data_dir, exist_ok=True)
+        history_path = os.path.join(user_data_dir, "history.json")
+
+        # ===== 读取历史文件 =====
+        history: list = []
+        if os.path.exists(history_path):
+            with open(history_path, "r", encoding="utf-8") as rf:
+                try:
+                    history = json.load(rf) or []
+                except json.JSONDecodeError:
+                    print(f"[WARN] history.json for user {user_id} is corrupted, resetting file.")
+                    history = []
+        
+
+        if len(history) == 0:
+            print(f"history length = 0")
+            history.append({
+                "conversation_id": conversation_id,
+                "title": f"Practice {conversation_id}",
+                "conversation": record
+            })
+        else :
+            conv_is_exist = False
+            for conv in history:
+                if conv["conversation_id"] == conversation_id:
+                    conv["conversation"].extend(record)
+                    conv_is_exist = True
+            if not conv_is_exist:
+                history.append({
+                    "conversation_id": len(history) + 1,
+                    "title": f"Practice {len(history) + 1}",
+                    "conversation": record
+                })
+        
+
+        # ===== 写入文件 =====
+        with open(history_path, "w", encoding="utf-8") as wf:
+            json.dump(history, wf, ensure_ascii=False, indent=4)
+
+    except Exception as e:
+        print(f"[ERROR] Failed to save conversation history for user {user_id}: {e}")
