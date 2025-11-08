@@ -1,5 +1,6 @@
 import os
 import json
+import pandas as pd
 from flask import Blueprint, jsonify, request
 from app.utils.llm import generate_ielts_topic, evaluate_ielts_essay, continue_ielts_conversation
 
@@ -73,7 +74,7 @@ def get_history():
 def get_history_by_userId(user_id: str):
     base_dir = os.path.dirname(os.path.dirname(__file__))
     history_path = os.path.join(base_dir, "data", user_id, "history.json")
-
+    print(history_path)
     if not os.path.exists(history_path):
         return {"error": f"history file not found for user {user_id}"}, 404
 
@@ -86,3 +87,79 @@ def get_history_by_userId(user_id: str):
         return {"error": "failed to read history file", "detail": str(exc)}, 500
 
     return {"history": history_data}
+
+@writing_bp.route("/writing/get_dashboard", methods=["GET"])
+def get_dashboard():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        return jsonify({"error": "user_id is required"}), 400
+    
+    result = get_dashboard_by_userId(user_id=user_id)
+    if isinstance(result, tuple):
+        body, status = result
+        return jsonify(body), status
+    return jsonify(result)
+
+
+def round_to_half(value):
+    """
+    按照规则舍入：
+    - [0, 0.25) -> 向下取整
+    - [0.25, 0.75) -> 0.5
+    - [0.75, 1) -> 向上取整
+    """
+    if pd.isna(value):
+        return 0.0
+    
+    integer_part = int(value)
+    decimal_part = value - integer_part
+    
+    if decimal_part < 0.25:
+        return float(integer_part)
+    elif decimal_part < 0.75:
+        return float(integer_part) + 0.5
+    else:
+        return float(integer_part + 1)
+
+
+def get_dashboard_by_userId(user_id: str):
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    dashboard_path = os.path.join(base_dir, "data", user_id, "writing_dashboard.csv")
+    
+    if not os.path.exists(dashboard_path):
+        return {"error": f"writing_dashboard.csv not found for user {user_id}"}, 404
+    
+    try:
+        # 读取 CSV 文件
+        df = pd.read_csv(dashboard_path, encoding='utf-8')
+        
+        # 检查文件是否为空
+        if df.empty:
+            return {"radar_chart": {}, "line_chart": []}
+        
+        # 计算各字段的平均值（用于 radar_chart）
+        averages = {}
+        for column in df.columns:
+            # 确保列是数值类型
+            numeric_values = pd.to_numeric(df[column], errors='coerce')
+            avg = numeric_values.mean()
+            # 如果平均值是 NaN，返回 None 或 0，并保留1位小数
+            averages[column] = round(float(avg), 1) if not pd.isna(avg) else 0.0
+        
+        # 计算每一行的平均值（用于 line_chart）
+        line_chart = []
+        for index, row in df.iterrows():
+            # 将每一行的所有值转换为数值类型
+            numeric_row = pd.to_numeric(row, errors='coerce')
+            # 计算该行的平均值
+            row_avg = numeric_row.mean()
+            # 按照规则舍入
+            rounded_avg = round_to_half(row_avg)
+            line_chart.append(rounded_avg)
+        
+        return {"radar_chart": averages, "line_chart": line_chart}
+        
+    except pd.errors.EmptyDataError:
+        return {"error": "writing_dashboard.csv is empty"}, 400
+    except Exception as exc:
+        return {"error": "failed to read or process writing_dashboard.csv", "detail": str(exc)}, 500

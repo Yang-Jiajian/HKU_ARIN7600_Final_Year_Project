@@ -1,15 +1,20 @@
 import os
 import uuid
 import json
-from typing import Tuple, Optional
+import re
+import csv
+from typing import Tuple, Optional, List, TypedDict
 
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
+from openai.types.responses.response_output_message import Content
 
 # 全局 chat model 对象
 _chat_model: Optional[ChatOpenAI] = None
 _initialization_error: Optional[str] = None
 
+class ListResponse(TypedDict):
+    scores: List[float]
 
 def _build_chat_model(api_base: str, api_key: str, model: str) -> Tuple[object, str]:
     try:
@@ -103,22 +108,71 @@ def evaluate_ielts_essay(conversation:list, essay:str, conversation_id: str, use
         return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": error_msg}, 500
     topic = conversation[0]["content"]
     system = (
-        "You are an IELTS Writing Task 2 examiner. Evaluate essays using official band descriptors: "
-        "Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy. "
-        "Provide a fair score 0-9 (increments of 0.5 allowed), a breakdown per criterion, concise strengths, "
-        "weaknesses, and prioritized suggestions. Return STRICT JSON with keys: "
-        "overall_band (number), breakdown (object with task_response, coherence_cohesion, lexical_resource, grammatical_range_accuracy), "
-        "strengths (array of strings), weaknesses (array of strings), suggestions (array of strings)."
+        '''
+        You are an IELTS Writing Task 2 examiner. Evaluate essays using the official IELTS Writing Task 2 band descriptors:
+Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy.
+
+Provide:
+
+A fair overall band score from 0 to 9 (increments of 0.5 allowed)
+A detailed numerical breakdown for each criterion
+Concise strengths, weaknesses, and prioritized suggestions
+Return your answer STRICTLY in the following plain-text format:
+
+**Overall Score**: [number] out of 9.0\n\n
+**Breakdown**:\n\n
+**Task Achievement**: [number]\n\n
+**Coherence & cohesion**: [number]\n\n
+**Lexical Resource**: [number]\n\n
+**Grammar Range & Accuracy**: [number]\n\n
+
+**Strengths**: 
+...(list of strengths)
+
+**Weaknesses**: 
+...(list of weaknesses)
+
+**Suggestions**:
+...(list of suggestions)
+Do not include extra commentary or explanatory text — only the formatted result shown above.
+        '''
     )
     user = (
-        f"Prompt: {topic}\n\nEssay:\n{essay}\n\nReturn JSON only."
+        f"Prompt: {topic}\n\nEssay:\n{essay}\n\n."
     )
 
     try:
         response = llm.invoke([SystemMessage(content=system), HumanMessage(content=user)])
         content = (getattr(response, "content", "") or "").strip()
+        
         if not content:
-            return {"error": "Empty response from LLM"}, 502
+            return {"error": "Empty response from LLM"}, 503
+        
+        match = re.search(
+            r"\*\*Breakdown\*\*:?([\s\S]*?)(?:\*\*Strengths\*\*|\*\*Weaknesses\*\*|\*\*Suggestions\*\*|$)",
+            content,
+            re.IGNORECASE,
+        )
+
+        breakdown_text = match.group(1).strip() if match else ""
+
+        # Step 2️⃣ — Remove the Markdown bold formatting (**bold** → plain)
+        cleaned = re.sub(r"\*\*(.*?)\*\*", r"\1", breakdown_text)
+
+        # Step 3️⃣ — Extract float (or integer) scores after the 4 target categories
+        pattern = (
+            r"(?:Task Achievement|Coherence\s*&\s*cohesion|Lexical Resource|Grammar Range\s*&\s*Accuracy)"
+            r"\s*:\s*([0-9]+(?:\.[0-9]+)?)"
+        )
+
+        scores = [float(x) for x in re.findall(pattern, cleaned, flags=re.IGNORECASE)]
+        
+        print(scores)
+        with open(f"./app/data/{user_id}/writing_dashboard.csv", "a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(scores + [scores[-1]])
+
+        
 
         # save the conversation to the history file
         record = [
@@ -209,7 +263,7 @@ def save_conversation_to_history(conversation_id: str, user_id: str, record: lis
         user_data_dir = os.path.join(app_dir, "data", user_id)
         os.makedirs(user_data_dir, exist_ok=True)
         history_path = os.path.join(user_data_dir, "history.json")
-
+        print(history_path)
         # ===== 读取历史文件 =====
         history: list = []
         if os.path.exists(history_path):
