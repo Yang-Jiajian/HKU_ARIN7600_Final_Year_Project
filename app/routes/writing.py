@@ -73,18 +73,18 @@ def get_history():
 
 def get_history_by_userId(user_id: str):
     base_dir = os.path.dirname(os.path.dirname(__file__))
-    history_path = os.path.join(base_dir, "data", user_id, "history.json")
+    history_path = os.path.join(base_dir, "data", user_id, "writing_history.json")
     print(history_path)
     if not os.path.exists(history_path):
-        return {"error": f"history file not found for user {user_id}"}, 404
+        return {"error": f"writing_history file not found for user {user_id}"}, 404
 
     try:
         with open(history_path, "r", encoding="utf-8") as file:
             history_data = json.load(file)
     except json.JSONDecodeError:
-        return {"error": "history file is not valid JSON"}, 500
+        return {"error": "writing_history file is not valid JSON"}, 500
     except Exception as exc:
-        return {"error": "failed to read history file", "detail": str(exc)}, 500
+        return {"error": "failed to read writing_history file", "detail": str(exc)}, 500
 
     return {"history": history_data}
 

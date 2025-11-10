@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS  # 跨域支持
 from .routes import register_blueprints
-from .utils.llm import initialize_chat_model
+from .utils.llm import initialize_chat_model, initialize_multimodal_client
 
 def create_app():
     app = Flask(__name__)
@@ -12,6 +12,9 @@ def create_app():
 
     # 初始化全局 chat model
     initialize_chat_model(app)
+    
+    # 初始化多模态客户端
+    initialize_multimodal_client(app)
 
     # 注册蓝图
     register_blueprints(app)
