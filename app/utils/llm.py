@@ -496,7 +496,7 @@ Return your evaluation in the following format:
     # 如果有对话历史，添加上下文
     if conversation:
         context_text = "\n\nPrevious conversation:\n"
-        for msg in conversation[-3:]:  # 只保留最近3条消息作为上下文
+        for msg in conversation:  # 只保留最近3条消息作为上下文
             role = msg.get("role", "")
             content = msg.get("content", "")
             if role == "user":
@@ -526,7 +526,7 @@ Return your evaluation in the following format:
         
         # 处理流式响应
         text_response = ""
-        audio_chunks = []
+        audio_string = ""
         transcript = ""
         
         for chunk in completion:
@@ -537,7 +537,7 @@ Return your evaluation in the following format:
                 if hasattr(chunk.choices[0].delta, "audio") and chunk.choices[0].delta.audio:
                     try:
                         if "data" in chunk.choices[0].delta.audio:
-                            audio_chunks.append(chunk.choices[0].delta.audio["data"])
+                            audio_string += chunk.choices[0].delta.audio["data"]
                         if "transcript" in chunk.choices[0].delta.audio:
                             transcript += chunk.choices[0].delta.audio.get("transcript", "")
                     except Exception as e:
@@ -560,9 +560,9 @@ Return your evaluation in the following format:
             "transcript": transcript if transcript else None
         }
         
-        # 如果有音频响应，合并所有音频块
-        if return_audio and audio_chunks:
-            response_data["audio"] = "".join(audio_chunks)
+        # 如果有音频响应，使用base64编码的字符串
+        if return_audio and audio_string:
+            response_data["audio"] = audio_string
         
         # 保存对话历史
         user_message = {
@@ -580,9 +580,9 @@ Return your evaluation in the following format:
             "part": task_number
         }
 
-        # 如果有音频数据，添加到消息中
-        if return_audio and audio_chunks:
-            bot_message["audio"] = "".join(audio_chunks)
+        # 如果有音频数据，使用base64编码保存为data URL格式
+        if return_audio and audio_string:
+            bot_message["audio"] = f"data:audio/wav;base64,{audio_string}"
         
         # 将用户上传的原始音频也保存到历史（使用 data URL，保留格式）
         try:

@@ -74,6 +74,7 @@ def evaluate_audio():
         user_id = request.form.get("user_id")
         part = request.form.get("part")
         conversation_id = request.form.get("conversation_id")
+        # conversation = json.loads(request.form.get("conversation"))
         
         if not user_id:
             return jsonify({"error": "user_id is required"}), 400
@@ -141,7 +142,7 @@ def evaluate_audio():
         except Exception as e:
             print(f"[WARN] Failed to load conversation history: {e}")
             # 如果获取历史失败，继续处理，不使用历史记录
-        
+        print(conversation)
         # 调用处理函数
         result = process_ielts_speaking_task(
             audio_base64=audio_base64,
@@ -149,7 +150,7 @@ def evaluate_audio():
             conversation_id=str(conversation_id),
             user_id=user_id,
             conversation=conversation,
-            return_audio=True,
+            return_audio=False,
             audio_format=audio_format
         )
         

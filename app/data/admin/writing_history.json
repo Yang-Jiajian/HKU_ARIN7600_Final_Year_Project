@@ -48,6 +48,76 @@
                 "message_id": "69f39f39-541e-475f-91a4-9c16d1a1ec4e",
                 "role": "bot",
                 "content": "**Overall Score**: 1.0 out of 9.0\n\n\n**Breakdown**:\n\n\n**Task Achievement**: 1.0\n\n\n**Coherence & cohesion**: 1.0\n\n\n**Lexical Resource**: 1.0\n\n\n**Grammar Range & Accuracy**: 1.0\n\n\n\n**Strengths**: \n- The response acknowledges the prompt exists by including a greeting.\n\n**Weaknesses**: \n- The essay consists only of the phrase \"hello, world\" followed by a period and does not address the task at all.\n- No discussion of either view, no opinion expressed, and no relevant ideas presented.\n- Lacks any paragraphing, structure, or development.\n- Contains no vocabulary related to the topic.\n- No grammatical sentences relevant to the task are present.\n\n**Suggestions**:\n- Write a complete essay with an introduction, body paragraphs discussing both sides, and a clear personal opinion.\n- Ensure all parts of the prompt are addressed.\n- Use relevant vocabulary and coherent sentence structures.\n- Practice planning and writing full Task 2 essays under timed conditions."
+            },
+            {
+                "message_id": "92840dbe-2cbd-4235-a212-359618a1a1ef",
+                "role": "user",
+                "content": "show me more"
+            },
+            {
+                "message_id": "94cab0f0-1333-4f0f-926d-ba036257e671",
+                "role": "bot",
+                "content": "Of course! Let’s build a **strong IELTS Writing Task 2 essay** together based on the prompt you provided:\n\n> *Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this funding would be better spent on improving public services such as healthcare and transportation. Discuss both views and give your own opinion.*\n\n---\n\n### ✅ Sample Band 8+ Essay:\n\n**Introduction**  \nPublic investment is a constant subject of debate, particularly when it comes to prioritizing between cultural and recreational infrastructure versus essential services. While some argue that funding sports and arts facilities enriches community life and fosters talent, others contend that limited resources should first address urgent needs like healthcare and transport. In my view, although sports and arts play a valuable role in society, basic public services must take precedence.\n\n**Body Paragraph 1 – Supporting sports and arts investment**  \nProponents of investing in sports and arts highlight their long-term social and economic benefits. Modern stadiums, community centers, and performance venues not only promote physical health and creativity but also create jobs and attract tourism. For example, cities like Barcelona and Melbourne have revitalized entire neighborhoods by hosting international sporting events or arts festivals, which boosted local economies. Moreover, accessible arts programs can improve mental well-being and reduce youth delinquency by providing constructive outlets for expression.\n\n**Body Paragraph 2 – Prioritizing healthcare and transportation**  \nOn the other hand, critics argue that in many countries, fundamental services remain underfunded. Overcrowded hospitals, outdated medical equipment, and inefficient public transport systems directly impact citizens’ quality of life and safety. In developing nations especially, millions lack access to clean water or reliable ambulances—issues far more pressing than new concert halls or football academies. Even in wealthier societies, aging infrastructure (like subway systems in New York or London) demands immediate upgrades to prevent economic disruption and accidents.\n\n**Conclusion – My opinion**  \nWhile sports and arts contribute meaningfully to cultural identity and social cohesion, they should not divert funds from critical public services. Governments ought to ensure that healthcare, sanitation, and transportation meet acceptable standards before allocating budgets to recreational projects. A balanced approach is ideal, but when resources are scarce, human survival and dignity must come first.\n\n---\n\n### 💡 Key Features of This Essay:\n- Clear **structure**: introduction → view 1 → view 2 → opinion + conclusion  \n- **Topic-specific vocabulary**: \"revitalized neighborhoods,\" \"youth delinquency,\" \"aging infrastructure\"  \n- **Cohesive devices**: \"On the other hand,\" \"Moreover,\" \"While... they should not...\"  \n- **Real-world examples**: Barcelona, Melbourne, New York subway  \n- **Balanced discussion** with a **clear personal stance**\n\nWould you like me to:\n- Break down how to plan this essay in 5 minutes?\n- Show a Band 6 vs. Band 8 version?\n- Help you write your own draft and give feedback?\n\nLet me know! 😊"
+            }
+        ]
+    },
+    {
+        "conversation_id": 3,
+        "title": "Practice 3",
+        "conversation": [
+            {
+                "message_id": "1581478a-5225-499f-8e10-5ca789270b6f",
+                "role": "bot",
+                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this funding would be better spent on improving public transportation. Discuss both views and give your own opinion."
+            },
+            {
+                "message_id": "af079da9-0f5f-43c9-a41c-7d7acf9face2",
+                "role": "bot",
+                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this money would be better spent on improving public transportation and healthcare. Discuss both views and give your own opinion."
+            }
+        ]
+    },
+    {
+        "conversation_id": 4,
+        "title": "Practice 4",
+        "conversation": [
+            {
+                "message_id": "3d84982b-3bda-432d-82f8-65a063c203dd",
+                "role": "bot",
+                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this money would be better spent on improving public services such as healthcare and transportation. Discuss both views and give your own opinion."
+            }
+        ]
+    },
+    {
+        "conversation_id": 5,
+        "title": "Practice 5",
+        "conversation": [
+            {
+                "message_id": "4d4ecd87-30b9-443f-baa5-dcf03d1e1494",
+                "role": "bot",
+                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this money would be better spent on improving public transportation and healthcare. Discuss both views and give your own opinion."
+            }
+        ]
+    },
+    {
+        "conversation_id": 6,
+        "title": "Practice 6",
+        "conversation": [
+            {
+                "message_id": "f7096b63-5c32-4d03-b77e-0ad21597f1eb",
+                "role": "bot",
+                "content": "Some people believe that governments should invest more in public transportation to reduce traffic congestion and air pollution, while others argue that individuals should be responsible for choosing eco-friendly transport options. Discuss both views and give your own opinion."
+            }
+        ]
+    },
+    {
+        "conversation_id": 7,
+        "title": "Practice 7",
+        "conversation": [
+            {
+                "message_id": "27913931-b87d-4fe7-b3eb-a497102be176",
+                "role": "bot",
+                "content": "Some people believe that governments should invest more in public transportation to reduce traffic congestion and pollution, while others argue that individuals should be responsible for choosing environmentally friendly transport options. Discuss both views and give your own opinion."
             }
         ]
     }
