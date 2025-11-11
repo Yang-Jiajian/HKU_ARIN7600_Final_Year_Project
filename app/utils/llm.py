@@ -66,7 +66,7 @@ def get_chat_model():
 
 
 def generate_ielts_topic(conversation_id: str, user_id: str):
-    """Use LangChain ChatOpenAI to generate a random IELTS Writing Task 2 topic."""
+    """Use LangChain ChatOpenAI to generate a random IELTS Writing Task 2 topic and concise tips."""
     
     llm, init_error = get_chat_model()
     if llm is None:
@@ -74,28 +74,48 @@ def generate_ielts_topic(conversation_id: str, user_id: str):
         return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": error_msg}, 500
 
     system_prompt = "You are a helpful assistant that creates IELTS Writing Task."
-    user_prompt = (
-        "Generate ONE realistic IELTS Writing Task to essay question. "
+    user_prompt_question = (
+        "Generate ONE realistic IELTS Writing Task 2 essay question. "
         "Vary topic randomly (e.g., education, technology, environment, health, culture, work). "
         "Return only the question text in English, without extra commentary."
     )
 
+    # Ask for concise, actionable tips for the generated question
+    system_prompt_tips = (
+        "You are an IELTS Writing coach. Provide concise, actionable tips for Planning and Writing Task 2."
+    )
+    user_prompt_tips = (
+        "Given the IELTS Writing Task 2 question above, provide a short guidance including:\n"
+        "- A possible thesis (one-sentence position)\n"
+        "- 2-3 key arguments with a brief justification each\n"
+        "- Suggested structure (Intro, Body 1/2, Conclusion)\n"
+        "Keep it concise and practical. Output in English using clear bullet points."
+    )
+
     try:
-        messages = [SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)]
-        response = llm.invoke(messages)
-        content = (getattr(response, "content", "") or "").strip()
-        if not content:
+        # First call: generate the question
+        response_q = llm.invoke([SystemMessage(content=system_prompt), HumanMessage(content=user_prompt_question)])
+        question = (getattr(response_q, "content", "") or "").strip()
+        if not question:
             return {"error": "Empty response from LLM"}, 502
+
+        # Second call: generate tips for the question (include the question for context)
+        response_tips = llm.invoke([
+            SystemMessage(content=system_prompt_tips),
+            HumanMessage(content=f"Question: {question}\n\n{user_prompt_tips}")
+        ])
+        tips = (getattr(response_tips, "content", "") or "").strip()
+
         # save the conversation to the history file
         message_id = str(uuid.uuid4())
         record = [
             {
                 "message_id": message_id,
                 "role": "bot",
-                "content": content
+                "content": question,
+                "tips": tips
             }
         ]
-        print(record)
         save_conversation_to_history(conversation_id=conversation_id, user_id=user_id, record=record)
         return record
     except Exception as e:
@@ -761,13 +781,48 @@ def generate_ielts_speaking_topic(conversation_id: str, user_id: str, part: int)
         
         if not content:
             return {"error": "Empty response from LLM"}, 502
-        
+
+        # Generate concise answering tips for the given part and question
+        tips_system = "You are an IELTS Speaking coach. Provide concise, actionable tips."
+        tips_user = ""
+        if part == 1:
+            tips_user = (
+                "Given this Part 1 question, provide a brief guidance on how to answer naturally:\n"
+                "- How to structure a 2-3 sentence answer (past/present/examples)\n"
+                "- 2-3 helpful phrases or collocations\n"
+                "- One common pitfall to avoid\n"
+                "Keep it short and practical. Use bullet points. Question: "
+                f"{content}"
+            )
+        elif part == 2:
+            tips_user = (
+                "Given this Part 2 topic card, provide a brief guidance on how to answer for 1-2 minutes:\n"
+                "- A simple outline (opening, 2-3 points, closing)\n"
+                "- 3-4 prompts to cover details (who/what/when/where/why/how)\n"
+                "- 2-3 helpful linking phrases\n"
+                "Keep it short and practical. Use bullet points. Topic:\n"
+                f"{content}"
+            )
+        else:
+            tips_user = (
+                "Given this Part 3 question, provide a brief guidance on answering analytically:\n"
+                "- A structure (position, reasons, examples, mini-conclusion)\n"
+                "- 2-3 ideas or angles to consider\n"
+                "- 2-3 academic phrases/connectors\n"
+                "Keep it short and practical. Use bullet points. Question: "
+                f"{content}"
+            )
+
+        tips_resp = llm.invoke([SystemMessage(content=tips_system), HumanMessage(content=tips_user)])
+        tips = (getattr(tips_resp, "content", "") or "").strip()
+
         # 保存题目到历史记录
         message_id = str(uuid.uuid4())
         record = [{
             "message_id": message_id,
             "role": "bot",
             "content": content,
+            "tips": tips,
             "conversation_id": int(conversation_id) if conversation_id.isdigit() else conversation_id,
             "part": part
         }]
@@ -778,7 +833,7 @@ def generate_ielts_speaking_topic(conversation_id: str, user_id: str, part: int)
             record=record
         )
         
-        return {"question": content}, 200
+        return {"question": content, "tips": tips}, 200
         
     except Exception as e:
         return {

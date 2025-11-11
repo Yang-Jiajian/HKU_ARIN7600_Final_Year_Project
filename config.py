@@ -11,9 +11,9 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # LLM 配置（通过 .env / 环境变量提供）
-    LLM_API_BASE = os.getenv("QWEN_API_BASE")  # 例如：https://api.openai.com
-    LLM_API_KEY = os.getenv("DASHSCOPE_API_KEY")
-    LLM_MODEL = os.getenv("QWEN_MODEL")  # 例如：gpt-4o-mini / gpt-4.1 / deepseek-chat 等
+    LLM_API_BASE = os.getenv("LLM_API_BASE")  # 例如：https://api.openai.com
+    LLM_API_KEY = os.getenv("LLM_API_KEY")
+    LLM_MODEL = os.getenv("LLM_MODEL")  # 例如：gpt-4o-mini / gpt-4.1 / deepseek-chat 等
     
     # 多模态API配置（阿里云百炼）
     DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")

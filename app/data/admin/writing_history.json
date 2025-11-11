@@ -4,120 +4,20 @@
         "title": "Practice 1",
         "conversation": [
             {
-                "message_id": "a01af8fa-cb99-43c2-8eb9-f379ab902fa8",
+                "message_id": "3159dd3f-9ea2-4b10-88fc-a7b009c5fb33",
                 "role": "bot",
-                "content": "Some people believe that governments should invest more in public transportation to reduce traffic congestion and air pollution, while others argue that individuals should be responsible for choosing environmentally friendly transport options. Discuss both views and give your own opinion."
+                "content": "Some people believe that working from home is more beneficial for employees than working in an office. Others think that it reduces productivity and hinders teamwork. Discuss both views and give your own opinion.",
+                "tips": "**Possible Thesis:**  \nWhile working from home offers considerable benefits for employees, it can also negatively impact productivity and teamwork; overall, a balanced approach is most effective.\n\n**Key Arguments:**  \n- **Benefit: Flexibility and Work-Life Balance**  \n  Employees gain flexibility, allowing better management of personal and professional responsibilities, which can boost job satisfaction.\n- **Drawback: Reduced Collaboration and Teamwork**  \n  Remote work can hinder real-time communication, making teamwork and creative collaboration more challenging.\n- **Drawback: Potential Decline in Productivity**  \n  Some employees may face more distractions at home or lack motivation, leading to decreased productivity for certain tasks or individuals.\n\n**Suggested Structure:**  \n- **Introduction:** Paraphrase the topic, mention both views, and state your own position/thesis.\n- **Body Paragraph 1:** Discuss benefits of working from home (e.g., flexibility, work-life balance).\n- **Body Paragraph 2:** Discuss drawbacks (e.g., reduced collaboration, lower productivity for some).\n- **Conclusion:** Summarize both sides and clearly restate your position (favoring a balanced or hybrid approach)."
             },
             {
-                "message_id": "9ca58a94-7619-4b6c-af01-da1c00e12cbe",
+                "message_id": "2523bcae-8949-4c7a-bc41-ff1f0938e0e5",
                 "role": "user",
-                "content": "Traffic congestion and air pollution have become pressing challenges in urban centers worldwide. While some advocate for greater government investment in public transportation as the primary solution, others maintain that individuals bear the ultimate responsibility for adopting eco-friendly travel habits. Both perspectives hold merit, and a nuanced understanding reveals that neither approach alone is sufficient.\n\nOn one hand, expanding and modernising public transport infrastructure—such as metro systems, electric buses, and dedicated bus lanes—can significantly alleviate traffic and emissions. Governments possess the resources, authority, and long-term planning capacity to implement large-scale projects that individuals simply cannot. For instance, cities like Copenhagen and Singapore have successfully reduced car dependency by integrating reliable, affordable, and high-frequency public transit with strict vehicle regulations and urban design that prioritises pedestrians and cyclists. Without state intervention, such systemic change would be impossible. Moreover, when public transport is convenient and cost-effective, it enables environmentally conscious choices—especially for lower-income groups who may not afford electric vehicles or bicycles.\n\nOn the other hand, critics rightly point out that infrastructure alone does not guarantee behavioural change. Even in cities with excellent transit networks, many commuters still opt for private cars due to habit, perceived convenience, or lack of awareness. Thus, individuals must take personal responsibility—for example, by choosing to walk, cycle, carpool, or use public transport when feasible. Education campaigns, carbon footprint calculators, and incentive schemes (e.g., tax rebates for zero-emission commuters) can foster this sense of agency. After all, sustainability is not merely a technical challenge but a cultural one: lasting change requires shifts in values and daily practices.\n\nIn my view, the most effective strategy is a synergistic one: governments should lead by creating the conditions for sustainable mobility—through investment, regulation, and urban planning—while individuals contribute through informed, responsible choices. Policies such as congestion pricing or low-emission zones are far more impactful when the public understands and supports their rationale. Conversely, individual efforts gain traction only when viable alternatives exist.\n\nIn conclusion, while personal responsibility is essential, it cannot substitute for systemic action. A collaborative model—where robust public infrastructure and empowered citizenry reinforce each other—offers the most viable path toward cleaner, less congested cities."
+                "content": "Hello, world."
             },
             {
-                "message_id": "5da40166-a83e-41b0-9a28-72734400abb6",
+                "message_id": "9eba2f3a-e308-46ee-abb9-1d2d2b2d8650",
                 "role": "bot",
-                "content": "**Overall Score**: 8.5 out of 9.0\n\n\n**Breakdown**:\n\n\n**Task Achievement**: 9.0\n\n\n**Coherence & cohesion**: 8.5\n\n\n**Lexical Resource**: 8.5\n\n\n**Grammar Range & Accuracy**: 9.0\n\n\n\n**Strengths**: \n- Fully addresses all parts of the prompt with a clear discussion of both views and a well-developed personal opinion.\n- Ideas are relevant, extended, and supported with specific examples (e.g., Copenhagen, Singapore, congestion pricing).\n- Logical progression with excellent paragraphing and cohesive devices (e.g., \"On one hand,\" \"On the other hand,\" \"In my view\").\n- Sophisticated vocabulary used accurately and appropriately (e.g., \"synergistic,\" \"systemic action,\" \"viable alternatives\").\n- Wide range of complex sentence structures with consistent grammatical accuracy.\n\n**Weaknesses**: \n- Minor overuse of complex sentences in places could slightly affect fluency, though not clarity.\n- One or two transitions (e.g., between paragraphs 3 and 4) could be slightly smoother for even better cohesion.\n\n**Suggestions**:\n- Occasionally vary sentence length to enhance rhythm and readability.\n- Use a transitional phrase like “Building on this idea” or “Given these considerations” to link the third and fourth paragraphs more explicitly."
-            },
-            {
-                "message_id": "81adc874-4a50-4725-8dfc-5137d43cabac",
-                "role": "user",
-                "content": "give me more suggestion."
-            },
-            {
-                "message_id": "147f7365-d8b8-497a-8c84-274b41eac6b6",
-                "role": "bot",
-                "content": "Certainly! Here are **more targeted suggestions** to help you refine your IELTS Writing Task 2 essay from a strong Band 8.5 toward a consistent **Band 9**:\n\n---\n\n### **1. Sharpen Your Thesis Statement**\nYour introduction is clear, but a **more precise thesis** can elevate impact.  \n✅ **Instead of**:  \n> *\"Both perspectives hold merit, and a nuanced understanding reveals that neither approach alone is sufficient.\"*  \n\n✅ **Try**:  \n> *\"While individual responsibility plays a role, systemic change driven by government investment is indispensable for meaningful reductions in congestion and pollution.\"*  \n\nThis signals your stance more assertively while still acknowledging complexity—key for Band 9.\n\n---\n\n### **2. Deepen Example Analysis**\nYou mention Copenhagen and Singapore effectively, but **explain *how*** their policies caused behavioral change.  \n✅ Add 1 sentence like:  \n> *\"In Singapore, high vehicle ownership taxes combined with a seamless metro system reduced private car usage to under 30% of commuters—demonstrating how infrastructure and policy jointly reshape habits.\"*\n\nThis shows **cause-effect reasoning**, not just description.\n\n---\n\n### **3. Address Counterarguments More Directly**\nIn paragraph 3 (individual responsibility), briefly **refute a limitation** to strengthen balance.  \n✅ Add:  \n> *\"However, expecting individuals to prioritize sustainability without affordable, reliable alternatives ignores socioeconomic realities—many simply lack viable options.\"*\n\nThis preempts the examiner’s potential doubt, showing critical thinking.\n\n---\n\n### **4. Vary Cohesive Devices**\nYou use “On one hand… On the other hand…” well, but **mix in less common transitions**:  \n- **For contrast**: *\"Granted, personal choices matter; nevertheless, structural barriers often override intent.\"*  \n- **For emphasis**: *\"Crucially, no amount of individual goodwill can compensate for absent bus routes or unsafe bike lanes.\"*\n\nAvoid overusing \"Moreover,\" \"Furthermore\"—opt for **\"Notably,\" \"Conversely,\" \"That said.\"**\n\n---\n\n### **5. Tighten Redundancy**\nA few phrases slightly repeat ideas. For example:  \n> *\"sustainability is not merely a technical challenge but a cultural one\"*  \n> *\"lasting change requires shifts in values and daily practices\"*  \n\n✅ **Combine**:  \n> *\"Sustainability demands not just technical fixes but cultural shifts in daily practices.\"*\n\nConciseness = higher lexical resource score.\n\n---\n\n### **6. Use Data or Specific Policies (If Comfortable)**\nBand 9 essays often include **precise evidence**. Even approximate stats help:  \n> *\"After London introduced congestion pricing in 2003, traffic dropped by 15% within a year (Transport for London, 2004).\"*\n\nIf unsure of exact numbers, say:  \n> *\"Studies show cities with integrated transit systems see up to 40% fewer emissions per capita.\"*\n\n---\n\n### **7. Conclude with Forward-Looking Insight**\nYour conclusion is strong, but end with **broader significance**:  \n✅ Add:  \n> *\"Ultimately, cleaner cities depend on a social contract: governments must provide equitable access to green mobility, and citizens must embrace it—turning collective infrastructure into collective action.\"*\n\nThis leaves a memorable, elevated final impression.\n\n---\n\n### Final Tip:\n**Read your essay aloud**. If any sentence feels heavy or repetitive, simplify it. Band 9 writing is **sophisticated yet fluid**—never forced.\n\nWould you like me to rewrite one paragraph using these suggestions as a model?"
-            }
-        ]
-    },
-    {
-        "conversation_id": 2,
-        "title": "Practice 2",
-        "conversation": [
-            {
-                "message_id": "31589382-abee-4c15-9b11-4dce8dfee116",
-                "role": "bot",
-                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this funding would be better spent on improving public services such as healthcare and transportation. Discuss both views and give your own opinion."
-            },
-            {
-                "message_id": "c7d9a4bf-8f2b-4574-9a48-f8571f8165f7",
-                "role": "user",
-                "content": "hello, world"
-            },
-            {
-                "message_id": "69f39f39-541e-475f-91a4-9c16d1a1ec4e",
-                "role": "bot",
-                "content": "**Overall Score**: 1.0 out of 9.0\n\n\n**Breakdown**:\n\n\n**Task Achievement**: 1.0\n\n\n**Coherence & cohesion**: 1.0\n\n\n**Lexical Resource**: 1.0\n\n\n**Grammar Range & Accuracy**: 1.0\n\n\n\n**Strengths**: \n- The response acknowledges the prompt exists by including a greeting.\n\n**Weaknesses**: \n- The essay consists only of the phrase \"hello, world\" followed by a period and does not address the task at all.\n- No discussion of either view, no opinion expressed, and no relevant ideas presented.\n- Lacks any paragraphing, structure, or development.\n- Contains no vocabulary related to the topic.\n- No grammatical sentences relevant to the task are present.\n\n**Suggestions**:\n- Write a complete essay with an introduction, body paragraphs discussing both sides, and a clear personal opinion.\n- Ensure all parts of the prompt are addressed.\n- Use relevant vocabulary and coherent sentence structures.\n- Practice planning and writing full Task 2 essays under timed conditions."
-            },
-            {
-                "message_id": "92840dbe-2cbd-4235-a212-359618a1a1ef",
-                "role": "user",
-                "content": "show me more"
-            },
-            {
-                "message_id": "94cab0f0-1333-4f0f-926d-ba036257e671",
-                "role": "bot",
-                "content": "Of course! Let’s build a **strong IELTS Writing Task 2 essay** together based on the prompt you provided:\n\n> *Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this funding would be better spent on improving public services such as healthcare and transportation. Discuss both views and give your own opinion.*\n\n---\n\n### ✅ Sample Band 8+ Essay:\n\n**Introduction**  \nPublic investment is a constant subject of debate, particularly when it comes to prioritizing between cultural and recreational infrastructure versus essential services. While some argue that funding sports and arts facilities enriches community life and fosters talent, others contend that limited resources should first address urgent needs like healthcare and transport. In my view, although sports and arts play a valuable role in society, basic public services must take precedence.\n\n**Body Paragraph 1 – Supporting sports and arts investment**  \nProponents of investing in sports and arts highlight their long-term social and economic benefits. Modern stadiums, community centers, and performance venues not only promote physical health and creativity but also create jobs and attract tourism. For example, cities like Barcelona and Melbourne have revitalized entire neighborhoods by hosting international sporting events or arts festivals, which boosted local economies. Moreover, accessible arts programs can improve mental well-being and reduce youth delinquency by providing constructive outlets for expression.\n\n**Body Paragraph 2 – Prioritizing healthcare and transportation**  \nOn the other hand, critics argue that in many countries, fundamental services remain underfunded. Overcrowded hospitals, outdated medical equipment, and inefficient public transport systems directly impact citizens’ quality of life and safety. In developing nations especially, millions lack access to clean water or reliable ambulances—issues far more pressing than new concert halls or football academies. Even in wealthier societies, aging infrastructure (like subway systems in New York or London) demands immediate upgrades to prevent economic disruption and accidents.\n\n**Conclusion – My opinion**  \nWhile sports and arts contribute meaningfully to cultural identity and social cohesion, they should not divert funds from critical public services. Governments ought to ensure that healthcare, sanitation, and transportation meet acceptable standards before allocating budgets to recreational projects. A balanced approach is ideal, but when resources are scarce, human survival and dignity must come first.\n\n---\n\n### 💡 Key Features of This Essay:\n- Clear **structure**: introduction → view 1 → view 2 → opinion + conclusion  \n- **Topic-specific vocabulary**: \"revitalized neighborhoods,\" \"youth delinquency,\" \"aging infrastructure\"  \n- **Cohesive devices**: \"On the other hand,\" \"Moreover,\" \"While... they should not...\"  \n- **Real-world examples**: Barcelona, Melbourne, New York subway  \n- **Balanced discussion** with a **clear personal stance**\n\nWould you like me to:\n- Break down how to plan this essay in 5 minutes?\n- Show a Band 6 vs. Band 8 version?\n- Help you write your own draft and give feedback?\n\nLet me know! 😊"
-            }
-        ]
-    },
-    {
-        "conversation_id": 3,
-        "title": "Practice 3",
-        "conversation": [
-            {
-                "message_id": "1581478a-5225-499f-8e10-5ca789270b6f",
-                "role": "bot",
-                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this funding would be better spent on improving public transportation. Discuss both views and give your own opinion."
-            },
-            {
-                "message_id": "af079da9-0f5f-43c9-a41c-7d7acf9face2",
-                "role": "bot",
-                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this money would be better spent on improving public transportation and healthcare. Discuss both views and give your own opinion."
-            }
-        ]
-    },
-    {
-        "conversation_id": 4,
-        "title": "Practice 4",
-        "conversation": [
-            {
-                "message_id": "3d84982b-3bda-432d-82f8-65a063c203dd",
-                "role": "bot",
-                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this money would be better spent on improving public services such as healthcare and transportation. Discuss both views and give your own opinion."
-            }
-        ]
-    },
-    {
-        "conversation_id": 5,
-        "title": "Practice 5",
-        "conversation": [
-            {
-                "message_id": "4d4ecd87-30b9-443f-baa5-dcf03d1e1494",
-                "role": "bot",
-                "content": "Some people believe that governments should invest more money in building facilities for sports and arts, while others argue that this money would be better spent on improving public transportation and healthcare. Discuss both views and give your own opinion."
-            }
-        ]
-    },
-    {
-        "conversation_id": 6,
-        "title": "Practice 6",
-        "conversation": [
-            {
-                "message_id": "f7096b63-5c32-4d03-b77e-0ad21597f1eb",
-                "role": "bot",
-                "content": "Some people believe that governments should invest more in public transportation to reduce traffic congestion and air pollution, while others argue that individuals should be responsible for choosing eco-friendly transport options. Discuss both views and give your own opinion."
-            }
-        ]
-    },
-    {
-        "conversation_id": 7,
-        "title": "Practice 7",
-        "conversation": [
-            {
-                "message_id": "27913931-b87d-4fe7-b3eb-a497102be176",
-                "role": "bot",
-                "content": "Some people believe that governments should invest more in public transportation to reduce traffic congestion and pollution, while others argue that individuals should be responsible for choosing environmentally friendly transport options. Discuss both views and give your own opinion."
+                "content": "**Overall Score**: 1.0 out of 9.0\n\n**Breakdown**:\n\n**Task Achievement**: 1.0\n\n**Coherence & cohesion**: 1.0\n\n**Lexical Resource**: 1.0\n\n**Grammar Range & Accuracy**: 1.0\n\n**Strengths**: \n- Attempted to respond to the task.\n\n**Weaknesses**: \n- Essay does not address the prompt.\n- No discussion or development of ideas.\n- No organization or coherent structure.\n- Extremely limited vocabulary.\n- No grammatical structures present.\n\n**Suggestions**:\n- Fully address the topic with relevant ideas and explanations.\n- Organize ideas into paragraphs with clear progression.\n- Use a wider range of vocabulary.\n- Write complete sentences with accurate grammar."
             }
         ]
     }
