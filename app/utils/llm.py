@@ -144,6 +144,7 @@ Provide:
 A fair overall band score from 0 to 9 (increments of 0.5 allowed)
 A detailed numerical breakdown for each criterion
 Concise strengths, weaknesses, and prioritized suggestions
+If the essay is not written in English, give 0 score.
 Return your answer STRICTLY in the following plain-text format:
 
 **Overall Score**: [number] out of 9.0\n\n
@@ -396,7 +397,8 @@ After the candidate's response, provide your evaluation based on the four offici
 - Lexical Resource
 - Grammatical Range and Accuracy
 - Pronunciation
-
+If the audio is not in English, give 0 score.
+Your standards ALWAYS MUST be very STRICT.
 Return your evaluation in the following format:
 
 **Overall Score**: [number] out of 9.0
