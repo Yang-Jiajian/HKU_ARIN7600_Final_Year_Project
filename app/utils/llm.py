@@ -4,6 +4,7 @@ import json
 import re
 import csv
 import base64
+import yaml
 from typing import Tuple, Optional, List, TypedDict, Dict, Any
 
 from langchain_openai import ChatOpenAI
@@ -18,6 +19,10 @@ _initialization_error: Optional[str] = None
 # 全局多模态客户端对象
 _multimodal_client: Optional[OpenAI] = None
 _multimodal_initialization_error: Optional[str] = None
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(current_dir,'prompt.yaml'), 'r', encoding='utf-8') as f:
+    PROMPT = yaml.safe_load(f)
 
 class ListResponse(TypedDict):
     scores: List[float]
@@ -134,37 +139,7 @@ def evaluate_ielts_essay(conversation:list, essay:str, conversation_id: str, use
         error_msg = init_error or "Chat model not initialized"
         return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": error_msg}, 500
     topic = conversation[0]["content"]
-    system = (
-        '''
-        You are an IELTS Writing Task 2 examiner. Evaluate essays using the official IELTS Writing Task 2 band descriptors:
-Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy.
-
-Provide:
-
-A fair overall band score from 0 to 9 (increments of 0.5 allowed)
-A detailed numerical breakdown for each criterion
-Concise strengths, weaknesses, and prioritized suggestions
-If the essay is not written in English, give 0 score.
-Return your answer STRICTLY in the following plain-text format:
-
-**Overall Score**: [number] out of 9.0\n\n
-**Breakdown**:\n\n
-**Task Achievement**: [number]\n\n
-**Coherence & cohesion**: [number]\n\n
-**Lexical Resource**: [number]\n\n
-**Grammar Range & Accuracy**: [number]\n\n
-
-**Strengths**: 
-...(list of strengths)
-
-**Weaknesses**: 
-...(list of weaknesses)
-
-**Suggestions**:
-...(list of suggestions)
-Do not include extra commentary or explanatory text — only the formatted result shown above.
-        '''
-    )
+    system = PROMPT["writing_task_evaluator"]
     user = (
         f"Prompt: {topic}\n\nEssay:\n{essay}\n\n."
     )
@@ -195,7 +170,7 @@ Do not include extra commentary or explanatory text — only the formatted resul
 
         scores = [float(x) for x in re.findall(pattern, cleaned, flags=re.IGNORECASE)]
         
-        print(scores)
+        # print(scores)
         with open(f"./app/data/{user_id}/writing_dashboard.csv", "a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(scores)
@@ -210,7 +185,7 @@ Do not include extra commentary or explanatory text — only the formatted resul
         }
         save_conversation_to_history(conversation_id=conversation_id, user_id=user_id, record=[conversation[-1],record])
         conversation.append(record)
-        print(conversation)
+        # print(conversation)
         return conversation
     except Exception as e:
         return {"error": "Failed to evaluate essay", "detail": str(e)}, 502
@@ -226,10 +201,7 @@ def continue_ielts_conversation(conversation: list, query: str,conversation_id:s
         return {"error": "Failed to initialize LangChain ChatOpenAI", "detail": error_msg}, 500
 
     # Ensure there is a guiding system prompt to keep the assistant as an IELTS coach
-    default_system = SystemMessage(content=(
-        "You are an IELTS Writing Task 2 coach. Answer follow-up questions succinctly, "
-        "reference previous feedback when relevant, and provide concrete examples."
-    ))
+    default_system = SystemMessage(content=PROMPT["writing_task_chat"])
 
     lc_messages = [default_system]
     for m in conversation or []:
@@ -280,7 +252,7 @@ def save_conversation_to_history(conversation_id: str, user_id: str, record: lis
         user_data_dir = os.path.join(app_dir, "data", user_id)
         os.makedirs(user_data_dir, exist_ok=True)
         history_path = os.path.join(user_data_dir, "writing_history.json")
-        print(f"history path: {history_path}")
+        # print(f"history path: {history_path}")
         # ===== 读取历史文件 =====
         history: list = []
         if os.path.exists(history_path):
@@ -330,7 +302,7 @@ def initialize_multimodal_client(app):
     global _multimodal_client, _multimodal_initialization_error
     
     api_key = app.config.get("DASHSCOPE_API_KEY") or os.getenv("DASHSCOPE_API_KEY")
-    api_base = app.config.get("DASHSCOPE_API_BASE") or os.getenv("DASHSCOPE_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+    api_base = app.config.get("QWEN_API_BASE") or os.getenv("QWEN_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1")
     
     if not api_key:
         _multimodal_initialization_error = "DASHSCOPE_API_KEY configuration missing"
@@ -387,110 +359,13 @@ def process_ielts_speaking_task(
         return {"error": "Failed to initialize multimodal client", "detail": error_msg}, 500
     
     # 根据任务编号设置不同的提示词
-    task_prompts = {
-        1: """You are an official IELTS Speaking Examiner conducting Part 1 of the IELTS Speaking test. 
-Part 1 typically lasts 4-5 minutes and involves general questions about familiar topics (e.g., home, family, work, studies, interests).
-
-Your task:
-After the candidate's response, provide your evaluation based on the four official IELTS criteria:
-- Fluency and Coherence
-- Lexical Resource
-- Grammatical Range and Accuracy
-- Pronunciation
-If the audio is not in English, give 0 score.
-Your standards ALWAYS MUST be very STRICT.
-Return your evaluation in the following format:
-
-**Overall Score**: [number] out of 9.0
-
-**Breakdown**:
-
-**Fluency & Coherence**: [number]
-
-**Lexical Resource**: [number]
-
-**Grammatical Range & Accuracy**: [number]
-
-**Pronunciation**: [number]
-
-**Strengths**: 
-...(list of strengths)
-
-**Weaknesses**: 
-...(list of weaknesses)
-
-**Suggestions**:
-...(list of suggestions)""",
-        
-        2: """You are an official IELTS Speaking Examiner conducting Part 2 of the IELTS Speaking test. 
-Part 2 is the "Long Turn" where the candidate speaks for 1-2 minutes on a given topic after 1 minute of preparation.
-
-Your task:
-1. Provide a topic card with a task description
-2. Listen to the candidate's 1-2 minute speech
-3. Evaluate their performance based on the four official IELTS criteria
-4. Provide detailed feedback
-
-Return your evaluation in the following format:
-
-**Overall Score**: [number] out of 9.0
-
-**Breakdown**:
-
-**Fluency & Coherence**: [number]
-
-**Lexical Resource**: [number]
-
-**Grammatical Range & Accuracy**: [number]
-
-**Pronunciation**: [number]
-
-**Strengths**: 
-...(list of strengths)
-
-**Weaknesses**: 
-...(list of weaknesses)
-
-**Suggestions**:
-...(list of suggestions)""",
-        
-        3: """You are an official IELTS Speaking Examiner conducting Part 3 of the IELTS Speaking test. 
-Part 3 is a two-way discussion (4-5 minutes) that explores abstract ideas and issues related to the topic in Part 2.
-
-Your task:
-1. Ask more abstract and analytical questions
-2. Listen to the candidate's responses
-3. Engage in a discussion, asking follow-up questions
-4. Evaluate their ability to express and justify opinions, analyze, discuss and speculate about issues
-
-Return your evaluation in the following format:
-
-**Overall Score**: [number] out of 9.0
-
-**Breakdown**:
-
-**Fluency & Coherence**: [number]
-
-**Lexical Resource**: [number]
-
-**Grammatical Range & Accuracy**: [number]
-
-**Pronunciation**: [number]
-
-**Strengths**: 
-...(list of strengths)
-
-**Weaknesses**: 
-...(list of weaknesses)
-
-**Suggestions**:
-...(list of suggestions)"""
-    }
+    task_prompts = PROMPT["oral_task_diff"]
     
     system_prompt = task_prompts.get(task_number)
     if not system_prompt:
         return {"error": f"Invalid task number: {task_number}. Must be 1, 2, or 3"}, 400
     
+    system_prompt += PROMPT["oral_task_evaluator"]
     # 准备音频数据（使用与test.py相同的格式）
     # 如果已经包含data:前缀，直接使用；否则提取base64部分并添加前缀
     if audio_base64.startswith("data:"):
@@ -533,7 +408,7 @@ Return your evaluation in the following format:
     try:
         # 调用多模态API
         completion = client.chat.completions.create(
-            model=os.getenv("DASHSCOPE_MODEL", "qwen3-omni-flash"),
+            model=os.getenv("QWEN_MODEL", "qwen3-omni-flash"),
             messages=[
                 {
                     "role": "user",
